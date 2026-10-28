@@ -1,0 +1,18 @@
+{
+  "name": "Nova Era — Печать Пустоты",
+  "short_name": "Nova Era",
+  "description": "Мобильная аниме RPG: герои, призывы и Печать Пустоты.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0c080e",
+  "theme_color": "#100811",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

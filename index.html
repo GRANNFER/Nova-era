@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#100811">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Nova Era — Печать Пустоты</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">N<span>E</span></div><div><div class="brand-name">NOVA <b>ERA</b></div><div class="brand-sub">ПЕЧАТЬ ПУСТОТЫ</div></div></div>
+  <div class="account"><span class="server">RU-1</span><span class="level">УР. <b id="playerLevel">1</b></span></div>
+</header>
+<main>
+  <section id="homeScreen" class="screen active">
+    <div class="hero-banner">
+      <div class="banner-orbit"></div><div class="banner-rift"></div>
+      <div class="banner-copy"><div class="eyebrow"><span class="pulse"></span> ПРОБУЖДЕНИЕ НАЧАЛОСЬ</div>
+        <h1>МИР<br><em>РАСКОЛОТ.</em></h1>
+        <p>Собери отряд. Разбуди силу.<br>Закрой Печать Пустоты.</p>
+        <button class="primary" data-go="battle">ВСТУПИТЬ В БОЙ <span>↗</span></button>
+      </div>
+      <div class="sigil">VOID<br><b>封</b><br>SEAL</div>
+      <div class="banner-bottom"><span>НОВАЯ ЭРА ШИНОБИ</span><span>СЕЗОН 01 / 7 ДНЕЙ</span></div>
+    </div>
+    <div class="resource-row">
+      <div class="resource"><span class="resource-icon crystal">◆</span><div><small>КРИСТАЛЛЫ</small><b id="crystals">1 200</b></div><button class="plus" data-action="crystalInfo">+</button></div>
+      <div class="resource"><span class="resource-icon coin">◉</span><div><small>МОНЕТЫ</small><b id="coins">8 500</b></div><button class="plus" data-action="coinInfo">+</button></div>
+      <div class="resource"><span class="resource-icon energy">ϟ</span><div><small>ЭНЕРГИЯ</small><b id="energy">87/120</b></div></div>
+    </div>
+    <div class="section-head"><div><span class="eyebrow">ТВОЯ БАЗА</span><h2>Пункт назначения</h2></div><span class="live-dot">● ONLINE</span></div>
+    <div class="hub-grid">
+      <button class="hub-card campaign" data-go="battle"><span class="hub-symbol">⚔</span><span class="hub-title">Кампания</span><small>Путь шиноби</small><span class="hub-arrow">↗</span></button>
+      <button class="hub-card summon" data-go="summon"><span class="hub-symbol">✧</span><span class="hub-title">Призыв</span><small>Позови героя</small><span class="hub-arrow">↗</span></button>
+      <button class="hub-card heroes" data-go="heroes"><span class="hub-symbol">◈</span><span class="hub-title">Герои</span><small>Твой отряд</small><span class="hub-arrow">↗</span></button>
+      <button class="hub-card void" data-go="void"><span class="hub-symbol">封</span><span class="hub-title">Печать Пустоты</span><small>Сектор 01</small><span class="hub-arrow">↗</span></button>
+    </div>
+    <div class="daily"><div class="daily-icon">✦</div><div><b>Ежедневный приказ</b><p id="dailyText">Пройди 1 бой и получи награду.</p></div><button id="claimDaily" class="small-button">ЗАБРАТЬ</button></div>
+  </section>
+
+  <section id="battleScreen" class="screen">
+    <div class="page-heading"><button class="back" data-go="home">‹</button><div><span class="eyebrow">КАМПАНИЯ / ГЛАВА 01</span><h2>Тропа испытаний</h2></div><span class="stage-tag">1—01</span></div>
+    <div class="battle-art"><div class="moon"></div><div class="mountain m1"></div><div class="mountain m2"></div><div class="battle-rift"></div><div class="battle-caption"><span>МИССИЯ 01</span><h3>Тени у ворот</h3><p>Неизвестные шиноби перекрыли путь.</p></div></div>
+    <div class="battle-info"><span>РЕКОМЕНДУЕМАЯ СИЛА</span><b>1 500 BP</b><span class="your-bp">ТВОЯ СИЛА <b id="battleBP">1 240 BP</b></span></div>
+    <div class="formation"><div class="formation-head"><h3>Твой отряд</h3><small>3 бойца · авторасстановка</small></div><div id="battleTeam" class="team-row"></div></div>
+    <button id="startBattle" class="primary wide">НАЧАТЬ БОЙ <span>⚔</span></button>
+    <div id="battleResult" class="result-panel hidden"></div>
+  </section>
+
+  <section id="summonScreen" class="screen">
+    <div class="page-heading"><button class="back" data-go="home">‹</button><div><span class="eyebrow">ЗОВ СУДЬБЫ</span><h2>Призыв героев</h2></div></div>
+    <div class="summon-art"><div class="summon-circle"></div><div class="summon-rift"></div><div class="summon-copy"><span>БАННЕР · СЕЗОН 01</span><h2>ПРОБУЖДЕНИЕ<br><em>ШИНОБИ</em></h2><p>Сила появляется там,<br>где заканчивается страх.</p></div><div class="rarity-odds"><span>R <b>55%</b></span><span>SR <b>35%</b></span><span>SSR <b>10%</b></span></div></div>
+    <div class="pity"><span>ГАРАНТИЯ SSR</span><b><span id="summonCount">0</span>/10</b><div class="pity-bar"><i id="pityFill"></i></div><small>10-й призыв гарантирует SSR в этом прототипе.</small></div>
+    <div class="summon-actions"><button id="summonOne" class="secondary">1 ПРИЗЫВ <small>100 ◆</small></button><button id="summonTen" class="primary">ПРИЗВАТЬ ×10 <small>900 ◆</small></button></div>
+    <div id="summonResults" class="summon-results"><span class="muted">Твои новые герои появятся здесь.</span></div>
+  </section>
+
+  <section id="heroesScreen" class="screen">
+    <div class="page-heading"><button class="back" data-go="home">‹</button><div><span class="eyebrow">КОЛЛЕКЦИЯ</span><h2>Герои</h2></div><span id="heroCount" class="stage-tag">3 героя</span></div>
+    <div class="hero-filter"><button class="filter active" data-filter="all">ВСЕ</button><button class="filter" data-filter="SSR">SSR</button><button class="filter" data-filter="SR">SR</button><button class="filter" data-filter="R">R</button></div>
+    <div id="heroGrid" class="hero-grid"></div>
+  </section>
+
+  <section id="voidScreen" class="screen">
+    <div class="page-heading"><button class="back" data-go="home">‹</button><div><span class="eyebrow">ЗАПЕЧАТАННАЯ ЗОНА</span><h2>Печать Пустоты</h2></div></div>
+    <div class="void-art"><div class="void-ring"></div><div class="void-core">封</div><span class="void-label">VOID RIFT / SECTOR 01</span></div>
+    <div class="void-copy"><h3>Разлом нестабилен</h3><p>За печатью скрыта энергия древних миров. Пройди испытание, чтобы получить кристаллы и материалы пробуждения.</p><div class="void-stats"><div><small>СЕКТОР</small><b id="sectorNum">01 / 10</b></div><div><small>НАГРАДА</small><b>+150 ◆</b></div><div><small>СТАТУС</small><b id="voidStatus">ЗАКРЫТ</b></div></div><button id="voidChallenge" class="primary wide">ИСПЫТАТЬ ПЕЧАТЬ <span>↗</span></button></div>
+  </section>
+</main>
+<nav class="bottom-nav">
+  <button class="nav-item active" data-go="home"><span>⌂</span><small>БАЗА</small></button>
+  <button class="nav-item" data-go="battle"><span>⚔</span><small>БОЙ</small></button>
+  <button class="nav-item summon-nav" data-go="summon"><span>✧</span><small>ПРИЗЫВ</small></button>
+  <button class="nav-item" data-go="heroes"><span>◈</span><small>ГЕРОИ</small></button>
+  <button class="nav-item" data-go="void"><span>封</span><small>РАЗЛОМ</small></button>
+</nav>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="modal" class="modal hidden"><div class="modal-card"><button id="closeModal" class="modal-close">×</button><div id="modalContent"></div></div></div>
+<script src="app.js"></script>
+</body>
+</html>
