@@ -3,7 +3,7 @@
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const saveKey = 'novaEraSave_v1';
   const initial = {
-    version: '0.1.1', crystals: 1200, coins: 8500, energy: 87, level: 1,
+    version: '0.2.0', crystals: 1200, coins: 8500, energy: 87, level: 1,
     summons: 0, wins: 0, dailyClaimed: false, voidCleared: false,
     heroes: [
       {id:'rei',name:'Рэй Кадзэ',rarity:'SR',level:1,bp:520,emoji:'🥷',element:'🌪️',glow:'#4b5d82',desc:'Быстрый шиноби ветра. Баланс атаки и скорости.',owned:true},
@@ -32,9 +32,12 @@
   // Keep the price and preview identical to the values used by upgrade().
   function upgradeCost(h){return 250 + h.level * 100;}
   function upgradedBP(h){return h.bp + Math.max(40, Math.round(h.bp * 0.08));}
-  function rarityColor(r){return r==='SSR'?'#ffcf70':r==='SR'?'#cf9cff':'#9fb5d7';}
+  function rarityColor(r){return r==='UR'?'#ff5e87':r==='SSR'?'#ffcf70':r==='SR'?'#cf9cff':'#9fb5d7';}
+  function rarityStars(h){const count=({R:1,'R+':2,S:3,SR:4,SSR:4,UR:5})[h.rarity]||1;return '★'.repeat(count)+'<span class="star-dim">'+('★'.repeat(Math.max(0,5-count)))+'</span>'; }
   function heroCard(h, team=false){
-    return `<div class="${team?'team-card':'hero-card'}"><div class="portrait" style="--glow:${h.glow||'#56304c'};--rarity-color:${rarityColor(h.rarity)}"><span class="rarity">${h.rarity}</span><span class="element">${h.element||'✦'}</span><span class="emoji">${h.emoji}</span></div><div class="team-details"><b>${h.name}</b><small>УР. ${h.level} · ${fmt(h.bp)} BP</small></div>${team?'':`<div class="hero-actions"><button data-upgrade="${h.id}" ${h.level>=250?'disabled':''}>${h.level>=250?'МАКС. УРОВЕНЬ':'УЛУЧШИТЬ · '+fmt(upgradeCost(h))+' ◉ · +1 ур.'}</button><button data-details="${h.id}">ПРОФИЛЬ</button></div>`}</div>`;
+    const rarityClass=(h.rarity||'R').toLowerCase().replace('+','plus');
+    const nextBP=upgradedBP(h);
+    return `<div class="${team?'team-card':'hero-card'} rarity-${rarityClass}" style="--glow:${h.glow||'#56304c'};--rarity-color:${rarityColor(h.rarity)}"><div class="portrait"><div class="portrait-halo"></div><div class="portrait-sigil">封</div><span class="rarity">${h.rarity}</span><span class="element">${h.element||'✦'}</span><span class="emoji">${h.emoji}</span><span class="portrait-label">NOVA ERA / SHINOBI</span></div><div class="hero-card-body"><div class="hero-name-row"><b>${h.name}</b><span class="hero-level">УР. ${h.level}</span></div><div class="hero-stars" aria-label="${h.rarity} rank">${rarityStars(h)}</div><div class="hero-power"><span>БОЕВАЯ СИЛА</span><b>${fmt(h.bp)} <small>BP</small></b></div><div class="hero-progress"><i style="width:${Math.min(100,Math.max(2,h.level/250*100))}%"></i></div><div class="hero-stat-row"><span>АТК <b>${fmt(Math.round(h.bp*.31))}</b></span><span>ЗАЩ <b>${fmt(Math.round(h.bp*.14))}</b></span><span>HP <b>${fmt(Math.round(h.bp*.55))}</b></span></div></div>${team?'':`<div class="hero-actions"><button class="upgrade-button" data-upgrade="${h.id}" ${h.level>=250?'disabled':''}>${h.level>=250?'МАКС. УРОВЕНЬ':'УСИЛИТЬ <small>+'+fmt(Math.max(40,Math.round(h.bp*.08)))+' BP</small><em>'+fmt(upgradeCost(h))+' ◉</em>'}</button><button class="details-button" data-details="${h.id}">ПРОФИЛЬ ↗</button></div>`}</div>`;
   }
   function renderTeam(){ $('#battleTeam').innerHTML=state.heroes.slice(0,3).map(h=>heroCard(h,true)).join(''); $('#battleBP').textContent=fmt(bp())+' BP'; }
   function renderHeroes(){
@@ -125,7 +128,7 @@
       return;
     }
     const up=e.target.closest('[data-upgrade]');if(up){upgrade(up.dataset.upgrade);return;}
-    const details=e.target.closest('[data-details]');if(details){const h=state.heroes.find(x=>x.id===details.dataset.details);if(h)modal(h.name,`<div class="modal-hero"><div class="emoji">${h.emoji}</div><div class="rarity-label">${h.rarity} · ${h.element}</div><p>${h.desc||'Шиноби отряда Nova Era.'}</p><p>Уровень: ${h.level} · Сила: ${fmt(h.bp)} BP</p><p>Следующее улучшение: ${h.level>=250?'максимальный уровень':fmt(upgradeCost(h))+' монет'}</p><p>Ожидаемая сила после улучшения: ${h.level>=250?'—':fmt(upgradedBP(h))+' BP'}</p></div>`);return;}
+    const details=e.target.closest('[data-details]');if(details){const h=state.heroes.find(x=>x.id===details.dataset.details);if(h)modal(h.name,`<div class="modal-hero"><div class="emoji">${h.emoji}</div><div class="rarity-label">${h.rarity} · ${h.element}</div><p>${h.desc||'Шиноби отряда Nova Era.'}</p><p>Уровень: ${h.level} · Сила: ${fmt(h.bp)} BP</p><p>АТК: ${fmt(Math.round(h.bp*.31))} · ЗАЩ: ${fmt(Math.round(h.bp*.14))} · HP: ${fmt(Math.round(h.bp*.55))}</p><p>Следующее улучшение: ${h.level>=250?'максимальный уровень':fmt(upgradeCost(h))+' монет'}</p><p>Ожидаемая сила после улучшения: ${h.level>=250?'—':fmt(upgradedBP(h))+' BP'}</p></div>`);return;}
     const filter=e.target.closest('[data-filter]');if(filter){activeFilter=filter.dataset.filter;$$('.filter').forEach(b=>b.classList.toggle('active',b===filter));renderHeroes();}
   });
   $('#startBattle').addEventListener('click',battle);
