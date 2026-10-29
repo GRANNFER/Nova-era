@@ -3,7 +3,7 @@
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const saveKey = 'novaEraSave_v1';
   const initial = {
-    version: '0.2.0', crystals: 1200, coins: 8500, energy: 87, level: 1,
+    version: '0.3.0', crystals: 1200, coins: 8500, energy: 87, level: 1,
     summons: 0, wins: 0, dailyClaimed: false, voidCleared: false,
     heroes: [
       {id:'rei',name:'Рэй Кадзэ',rarity:'SR',level:1,bp:520,emoji:'🥷',element:'🌪️',glow:'#4b5d82',desc:'Быстрый шиноби ветра. Баланс атаки и скорости.',owned:true},
@@ -15,6 +15,8 @@
   try { state = {...initial, ...JSON.parse(localStorage.getItem(saveKey) || '{}')}; } catch { state = {...initial}; }
   if (!Array.isArray(state.heroes)) state.heroes = initial.heroes;
   let activeFilter = 'all';
+  let activeElementFilter = 'all';
+  let activeSort = 'bp';
   let toastTimer;
   function persist(){ try { localStorage.setItem(saveKey, JSON.stringify(state)); } catch {} updateUI(); }
   function fmt(n){ return Math.floor(n).toLocaleString('ru-RU'); }
@@ -41,9 +43,12 @@
   }
   function renderTeam(){ $('#battleTeam').innerHTML=state.heroes.slice(0,3).map(h=>heroCard(h,true)).join(''); $('#battleBP').textContent=fmt(bp())+' BP'; }
   function renderHeroes(){
-    const list=state.heroes.filter(h=>activeFilter==='all'||h.rarity===activeFilter);
+    let list=state.heroes.filter(h=>(activeFilter==='all'||h.rarity===activeFilter)&&(activeElementFilter==='all'||h.element===activeElementFilter));
+    const rarityOrder={UR:5,SSR:4,SR:3,S:2,'R+':1,R:0};
+    list.sort((a,b)=>activeSort==='level'?b.level-a.level:activeSort==='rarity'?(rarityOrder[b.rarity]||0)-(rarityOrder[a.rarity]||0):b.bp-a.bp);
     $('#heroCount').textContent=state.heroes.length+' гер.';
-    $('#heroGrid').innerHTML=list.length?list.map(h=>heroCard(h)).join(''):'<div class="empty-state">Пока нет героев этой редкости.<br>Попробуй призыв.</div>';
+    $('#ownedHeroCount').textContent=state.heroes.length;
+    $('#heroGrid').innerHTML=list.length?list.map(h=>heroCard(h)).join(''):'<div class="empty-state">Героев с такими параметрами пока нет.<br>Измени фильтр или попробуй призыв.</div>';
   }
   function updateUI(){
     $('#crystals').textContent=fmt(state.crystals);$('#coins').textContent=fmt(state.coins);
@@ -128,9 +133,11 @@
       return;
     }
     const up=e.target.closest('[data-upgrade]');if(up){upgrade(up.dataset.upgrade);return;}
-    const details=e.target.closest('[data-details]');if(details){const h=state.heroes.find(x=>x.id===details.dataset.details);if(h)modal(h.name,`<div class="modal-hero"><div class="emoji">${h.emoji}</div><div class="rarity-label">${h.rarity} · ${h.element}</div><p>${h.desc||'Шиноби отряда Nova Era.'}</p><p>Уровень: ${h.level} · Сила: ${fmt(h.bp)} BP</p><p>АТК: ${fmt(Math.round(h.bp*.31))} · ЗАЩ: ${fmt(Math.round(h.bp*.14))} · HP: ${fmt(Math.round(h.bp*.55))}</p><p>Следующее улучшение: ${h.level>=250?'максимальный уровень':fmt(upgradeCost(h))+' монет'}</p><p>Ожидаемая сила после улучшения: ${h.level>=250?'—':fmt(upgradedBP(h))+' BP'}</p></div>`);return;}
-    const filter=e.target.closest('[data-filter]');if(filter){activeFilter=filter.dataset.filter;$$('.filter').forEach(b=>b.classList.toggle('active',b===filter));renderHeroes();}
+    const details=e.target.closest('[data-details]');if(details){const h=state.heroes.find(x=>x.id===details.dataset.details);if(h)modal(h.name,`<div class="modal-hero profile-detail"><div class="profile-art" style="--glow:${h.glow||'#56304c'};--rarity-color:${rarityColor(h.rarity)}"><span class="profile-rarity">${h.rarity}</span><span class="profile-element">${h.element||'✦'}</span><span class="emoji">${h.emoji}</span><span class="profile-stars">${rarityStars(h)}</span></div><div class="rarity-label">${h.rarity} · ${h.element||'Стихия не указана'}</div><p>${h.desc||'Шиноби отряда Nova Era.'}</p><div class="profile-stat-grid"><div><small>БОЕВАЯ СИЛА</small><b>${fmt(h.bp)} BP</b></div><div><small>УРОВЕНЬ</small><b>${h.level}/250</b></div><div><small>АТАКА</small><b>${fmt(Math.round(h.bp*.31))}</b></div><div><small>ЗАЩИТА</small><b>${fmt(Math.round(h.bp*.14))}</b></div><div><small>ЗДОРОВЬЕ</small><b>${fmt(Math.round(h.bp*.55))}</b></div><div><small>СЛЕД. УЛУЧШЕНИЕ</small><b>${h.level>=250?'МАКС.':fmt(upgradeCost(h))+' ◉'}</b></div></div><div class="profile-skill-title">НАВЫКИ ШИНОБИ</div><div class="profile-skills"><div><span>⚔️</span><b>Быстрый удар</b><small>Урон от АТК</small></div><div><span>${h.element||'✦'}</span><b>Стихийная техника</b><small>Особый эффект стихии</small></div><div><span>✧</span><b>Пробуждение</b><small>Открывается при развитии</small></div></div><p class="profile-note">Навыки пока представлены как интерфейсный прототип; их боевые эффекты будут добавлены отдельным обновлением.</p></div>`);return;}
+    const filter=e.target.closest('[data-filter]');if(filter){activeFilter=filter.dataset.filter;$$('.filter').forEach(b=>b.classList.toggle('active',b===filter));renderHeroes();return;}
+    const element=e.target.closest('[data-element]');if(element){activeElementFilter=element.dataset.element;$$('.element-chip').forEach(b=>b.classList.toggle('active',b===element));renderHeroes();return;}
   });
+  $('#heroSort').addEventListener('change',e=>{activeSort=e.target.value;renderHeroes();});
   $('#startBattle').addEventListener('click',battle);
   $('#summonOne').addEventListener('click',()=>summon(1));
   $('#summonTen').addEventListener('click',()=>summon(10));

@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#100811">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Nova Era — Печать Пустоты</title>
+<title>Nova Era v0.3.0 — Печать Пустоты</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
@@ -14,7 +14,7 @@
 <body>
 <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
 <header class="topbar">
-  <div class="brand"><div class="brand-mark">N<span>E</span></div><div><div class="brand-name">NOVA <b>ERA</b></div><div class="brand-sub">ПЕЧАТЬ ПУСТОТЫ</div></div></div>
+  <div class="brand"><div class="brand-mark">N<span>E</span></div><div><div class="brand-name">NOVA <b>ERA</b></div><div class="brand-sub">ПЕЧАТЬ ПУСТОТЫ · v0.3.0</div></div></div>
   <div class="account"><span class="server">RU-1</span><span class="level">УР. <b id="playerLevel">1</b></span></div>
 </header>
 <main>
@@ -64,6 +64,8 @@
   <section id="heroesScreen" class="screen">
     <div class="page-heading"><button class="back" data-go="home">‹</button><div><span class="eyebrow">КОЛЛЕКЦИЯ</span><h2>Герои</h2></div><span id="heroCount" class="stage-tag">3 героя</span></div>
     <div class="hero-filter"><button class="filter active" data-filter="all">ВСЕ</button><button class="filter" data-filter="UR">UR</button><button class="filter" data-filter="SSR">SSR</button><button class="filter" data-filter="SR">SR</button><button class="filter" data-filter="R">R</button></div>
+    <div class="element-filter" aria-label="Фильтр по стихии"><button class="element-chip active" data-element="all">✦ Все стихии</button><button class="element-chip" data-element="🔥">🔥 Пламя</button><button class="element-chip" data-element="🌪️">🌪️ Ветер</button><button class="element-chip" data-element="⚡">⚡ Молния</button><button class="element-chip" data-element="🌘">🌘 Пустота</button><button class="element-chip" data-element="💧">💧 Вода</button></div>
+    <div class="collection-tools"><span>КОЛЛЕКЦИЯ <b id="ownedHeroCount">3</b></span><label for="heroSort">Сортировка</label><select id="heroSort"><option value="bp">По BP</option><option value="level">По уровню</option><option value="rarity">По редкости</option></select></div>
     <div id="heroGrid" class="hero-grid"></div>
   </section>
 
