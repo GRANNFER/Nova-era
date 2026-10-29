@@ -3,7 +3,7 @@
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const saveKey = 'novaEraSave_v1';
   const initial = {
-    version: '0.3.0', crystals: 1200, coins: 8500, energy: 87, level: 1,
+    version: '0.4.0', crystals: 1200, coins: 8500, energy: 87, level: 1,
     summons: 0, wins: 0, dailyClaimed: false, voidCleared: false,
     heroes: [
       {id:'rei',name:'Рэй Кадзэ',rarity:'SR',level:1,bp:520,emoji:'🥷',element:'🌪️',glow:'#4b5d82',desc:'Быстрый шиноби ветра. Баланс атаки и скорости.',owned:true},
