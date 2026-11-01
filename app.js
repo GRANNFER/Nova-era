@@ -20,7 +20,7 @@
   let toastTimer;
   // NOVA ERA — ENERGY REGENERATION
 const ENERGY_MAX = 120;
-const ENERGY_INTERVAL = 6 * 60 * 1000;
+const ENERGY_INTERVAL = 1 * 60 * 1000;
 
 if (!Number.isFinite(state.energyUpdatedAt)) {
   state.energyUpdatedAt = Date.now();
