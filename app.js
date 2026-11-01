@@ -18,6 +18,35 @@
   let activeElementFilter = 'all';
   let activeSort = 'bp';
   let toastTimer;
+  // NOVA ERA — ENERGY REGENERATION
+const ENERGY_MAX = 120;
+const ENERGY_INTERVAL = 6 * 60 * 1000;
+
+if (!Number.isFinite(state.energyUpdatedAt)) {
+  state.energyUpdatedAt = Date.now();
+}
+
+function regenerateEnergy() {
+  const now = Date.now();
+  const elapsed = now - state.energyUpdatedAt;
+  const gained = Math.floor(elapsed / ENERGY_INTERVAL);
+
+  if (gained > 0) {
+    state.energy = Math.min(ENERGY_MAX, state.energy + gained);
+    state.energyUpdatedAt += gained * ENERGY_INTERVAL;
+
+    if (state.energy >= ENERGY_MAX) {
+      state.energyUpdatedAt = now;
+    }
+
+    localStorage.setItem(saveKey, JSON.stringify(state));
+  }
+}
+
+setInterval(() => {
+  regenerateEnergy();
+  updateUI();
+}, 10000);
   function persist(){ try { localStorage.setItem(saveKey, JSON.stringify(state)); } catch {} updateUI(); }
   function fmt(n){ return Math.floor(n).toLocaleString('ru-RU'); }
   function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2300); }
@@ -51,6 +80,7 @@
     $('#heroGrid').innerHTML=list.length?list.map(h=>heroCard(h)).join(''):'<div class="empty-state">Героев с такими параметрами пока нет.<br>Измени фильтр или попробуй призыв.</div>';
   }
   function updateUI(){
+        regenerateEnergy();
     $('#crystals').textContent=fmt(state.crystals);$('#coins').textContent=fmt(state.coins);
     $('#energy').textContent=state.energy+'/120';$('#playerLevel').textContent=state.level;
     $('#summonCount').textContent=state.summons%10;$('#pityFill').style.width=((state.summons%10)*10)+'%';
@@ -103,8 +133,9 @@
     if(ssr) setTimeout(()=>modal('ПРОБУЖДЕНИЕ SSR',`<div class="modal-hero"><div class="emoji">${results.find(h=>h.rarity==='SSR').emoji}</div><div class="rarity-label">SSR · ЛЕГЕНДАРНЫЙ ГЕРОЙ</div><h2>${results.find(h=>h.rarity==='SSR').name}</h2><p>${results.find(h=>h.rarity==='SSR').desc}</p></div>`,'В КОЛЛЕКЦИЮ',()=>go('heroes')),450);
   }
   function battle(){
-    if(state.energy<10){toast('Недостаточно энергии. Для боя нужно 10.');return;}
-    state.energy-=10;
+if(state.energy<10){toast('Недостаточно энергии. Для боя нужно 10.');return;}
+if(state.energy>=ENERGY_MAX) state.energyUpdatedAt=Date.now();
+state.energy-=10;
     const power=bp(), win=power>=1200||Math.random()<(power/1600);
     const result=$('#battleResult');result.classList.remove('hidden');
     if(win){
