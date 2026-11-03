@@ -18,7 +18,7 @@
   let activeElementFilter = 'all';
   let activeSort = 'bp';
   let toastTimer;
-  // NOVA ERA — ENERGY REGENERATION
+// NOVA ERA — ENERGY REGENERATION
 const ENERGY_MAX = 120;
 const ENERGY_INTERVAL = 1 * 60 * 1000;
 
@@ -28,6 +28,13 @@ if (!Number.isFinite(state.energyUpdatedAt)) {
 
 function regenerateEnergy() {
   const now = Date.now();
+
+  if (state.energy >= ENERGY_MAX) {
+    state.energy = ENERGY_MAX;
+    state.energyUpdatedAt = now;
+    return;
+  }
+
   const elapsed = now - state.energyUpdatedAt;
   const gained = Math.floor(elapsed / ENERGY_INTERVAL);
 
@@ -39,7 +46,11 @@ function regenerateEnergy() {
       state.energyUpdatedAt = now;
     }
 
-    localStorage.setItem(saveKey, JSON.stringify(state));
+    try {
+      localStorage.setItem(saveKey, JSON.stringify(state));
+    } catch (error) {
+      console.error('Energy save failed:', error);
+    }
   }
 }
 
