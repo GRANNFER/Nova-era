@@ -25,7 +25,11 @@ const ENERGY_INTERVAL = 1 * 60 * 1000;
 if (!Number.isFinite(state.energyUpdatedAt)) {
   state.energyUpdatedAt = Date.now();
 }
-
+try {
+  localStorage.setItem(saveKey, JSON.stringify(state));
+} catch (error) {
+  console.error('Energy timer save failed:', error);
+}
 function regenerateEnergy() {
   const now = Date.now();
 
