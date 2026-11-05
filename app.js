@@ -14,6 +14,8 @@
   let state;
   try { state = {...initial, ...JSON.parse(localStorage.getItem(saveKey) || '{}')}; } catch { state = {...initial}; }
   if (!Array.isArray(state.heroes)) state.heroes = initial.heroes;
+  const rei = state.heroes.find(h => h.id === 'rei');
+if (rei) rei.portrait = './rei.png';
   let activeFilter = 'all';
   let activeElementFilter = 'all';
   let activeSort = 'bp';
