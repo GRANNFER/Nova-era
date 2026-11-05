@@ -30,13 +30,19 @@ html{scroll-padding-bottom:calc(130px + env(safe-area-inset-bottom));}
 }
 
 .hero-portrait-img {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  z-index: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.portrait .emoji {
+  position: relative;
+  z-index: 2;
 }
 
 .portrait-halo,
